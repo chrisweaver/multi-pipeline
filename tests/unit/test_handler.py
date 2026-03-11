@@ -23,7 +23,7 @@ PACKAGE = "depositor"
 MODULE = "depositor"
 
 # Ensure package/module is importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", f"{PACKAGE}"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", f"{PACKAGE}"))
 test_module = importlib.import_module(MODULE, package=PACKAGE)
 
 # ---------------------------------------------------------------------------

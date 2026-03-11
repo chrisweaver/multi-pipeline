@@ -26,7 +26,7 @@ BUCKET = "integration-test-bucket"
 REGION = "us-east-1"
 
 # Ensure package/module is importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", f"{PACKAGE}"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", f"{PACKAGE}"))
 test_module = importlib.import_module(MODULE, package=PACKAGE)
 
 def _configure_aws_env():
