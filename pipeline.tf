@@ -14,6 +14,7 @@
 
 locals {
   codebuild_image   = "aws/codebuild/standard:7.0"
+  #codebuild_image   = "aws/codebuild/amazonlinux2-x86_64-standard:5.0-26.01.16"
   codebuild_compute = "BUILD_GENERAL1_SMALL"
 }
 

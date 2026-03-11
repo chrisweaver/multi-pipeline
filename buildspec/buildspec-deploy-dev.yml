@@ -22,12 +22,12 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
-      - pip install awscli --upgrade --quiet
+      - ls -l
+      - env | sort
+      - aws --version
 
   pre_build:
     commands:
-      - ls -l
-      - env | sort
       - echo "=== Deploying to DEV ==="
       - echo "Lambda-> $LAMBDA_FUNCTION_NAME"
       - echo "Bucket-> $TARGET_BUCKET"
@@ -57,9 +57,6 @@ phases:
 
       # Step 3 — Invoke Lambda and capture response
       - echo "=== Smoke-test- invoking Lambda ==="
-      - env |sort
-      - aws --version
-      - ls /tmp
       - >-
         aws lambda invoke
         --function-name "$LAMBDA_FUNCTION_NAME"
