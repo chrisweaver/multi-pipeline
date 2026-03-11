@@ -68,12 +68,12 @@ phases:
 
       # Step 4 — Extract the S3 key returned by the Lambda
       - echo "=== Extracting deposited S3 key ==="
-      - |
-        DEPOSITED_KEY=$(jq -r '.key' /tmp/lambda-response.json)
-        echo "Deposited key-> $DEPOSITED_KEY"
+      - DEPOSITED_KEY=$(jq -r '.key' /tmp/lambda-response.json)
+      - echo "Deposited key-> $DEPOSITED_KEY"
 
-        # Step 5 — Confirm the object is present in S3
-        echo "=== Verifying S3 deposit ==="
+      # Step 5 — Confirm the object is present in S3
+      - echo "=== Verifying S3 deposit ==="
+      - >-
         aws s3api head-object
         --bucket "$TARGET_BUCKET"
         --key "$DEPOSITED_KEY"
