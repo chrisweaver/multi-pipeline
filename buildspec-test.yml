@@ -1,0 +1,67 @@
+# buildspec/buildspec-test.yml
+# TEST STAGE
+# Runs the full pytest suite (unit + integration).
+# Results are published to CodeBuild as a JUnit XML report.
+# The stage fails if any test fails — blocking downstream deploy stages.
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - pip install --upgrade pip --quiet
+      - pip install -r requirements.txt -r requirements-dev.txt --quiet
+
+  pre_build:
+    commands:
+      - echo "=== Running tests ==="
+      - mkdir -p test-results
+
+  build:
+    commands:
+      # Unit tests
+      - |
+        python -m pytest tests/unit/ \
+          --junitxml=test-results/unit.xml \
+          --tb=short \
+          -v
+
+      # Integration tests (uses moto to mock AWS services — no real AWS calls)
+      - |
+        python -m pytest tests/integration/ \
+          --junitxml=test-results/integration.xml \
+          --tb=short \
+          -v
+
+      # Coverage report (informational — does not gate the build)
+      - |
+        python -m pytest tests/ \
+          --cov=src \
+          --cov-report=term-missing \
+          --cov-report=xml:test-results/coverage.xml \
+          --quiet || true
+
+  post_build:
+    commands:
+      - echo "=== Test results ==="
+      - cat test-results/unit.xml        | grep -E 'tests=|failures=|errors='
+      - cat test-results/integration.xml | grep -E 'tests=|failures=|errors='
+
+# Publish JUnit reports to CodeBuild console
+reports:
+  unit-test-report:
+    files:
+      - test-results/unit.xml
+    file-format: JUNITXML
+  integration-test-report:
+    files:
+      - test-results/integration.xml
+    file-format: JUNITXML
+
+# Pass everything downstream so the deploy buildspecs can find the zip
+artifacts:
+  files:
+    - "**/*"
+  discard-paths: no
