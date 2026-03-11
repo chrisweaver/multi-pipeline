@@ -26,6 +26,8 @@ phases:
 
   pre_build:
     commands:
+      - ls -l
+      - env | sort
       - echo "=== Deploying to DEV ==="
       - echo "Lambda : $LAMBDA_FUNCTION_NAME"
       - echo "Bucket : $TARGET_BUCKET"
