@@ -628,7 +628,7 @@ resource "aws_iam_role_policy" "codebuild" {
 }
 
 data "aws_iam_policy_document" "codebuild_permissions" {
-  # Artifact S3
+  # Artifact S3 bucket
   statement {
     sid    = "ArtifactStore"
     effect = "Allow"
@@ -637,7 +637,9 @@ data "aws_iam_policy_document" "codebuild_permissions" {
       "s3:PutObject",
       "s3:GetBucketVersioning",
       "s3:GetObjectVersion",
+      "s3:ListBucket",
     ]
+    # TODO: add target buckets as well
     resources = [
       aws_s3_bucket.artifacts.arn,
       "${aws_s3_bucket.artifacts.arn}/*",
