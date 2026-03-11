@@ -17,4 +17,4 @@ repo_branch = "master"
 source_codeconnections_arn = "arn:aws:codeconnections:us-east-1:093597283188:connection/546906ef-b09e-4d21-bea2-9c07960c9d8a"
 
 # Lambda
-lambda_handler = "depositor.depositor"
+lambda_handler = "depositor.handler"

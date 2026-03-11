@@ -149,8 +149,9 @@ resource "aws_cloudwatch_log_group" "codebuild" {
 # ------------------------------------------------------------------------------
 
 resource "aws_codepipeline" "pr" {
-  name     = "${var.team_app_name}-pr-pipeline"
-  role_arn = aws_iam_role.codepipeline.arn
+  name          = "${var.team_app_name}-pr-pipeline"
+  pipeline_type = "V2"
+  role_arn      = aws_iam_role.codepipeline.arn
 
   artifact_store {
     location = aws_s3_bucket.artifacts.bucket
@@ -601,9 +602,9 @@ data "aws_iam_policy_document" "codepipeline_permissions" {
 
   # PassRole so CodePipeline can hand the CodeBuild role to build jobs
   statement {
-    sid       = "PassRole"
-    effect    = "Allow"
-    actions   = ["iam:PassRole"]
+    sid     = "PassRole"
+    effect  = "Allow"
+    actions = ["iam:PassRole"]
     resources = [
       aws_iam_role.codebuild.arn
     ]
@@ -673,7 +674,9 @@ data "aws_iam_policy_document" "codebuild_permissions" {
     sid    = "LambdaUpdateCode"
     effect = "Allow"
     actions = [
+      "lambda:InvokeFunction",
       "lambda:UpdateFunctionCode",
+      "lambda:GetFunctionConfiguration",
       "lambda:GetFunction",
       "lambda:PublishVersion",
       "lambda:UpdateAlias",
@@ -687,12 +690,12 @@ data "aws_iam_policy_document" "codebuild_permissions" {
 
   # Read SSM parameters if the deploy scripts need config values
   statement {
-    sid       = "SSMReadOnly"
-    effect    = "Allow"
-    actions   = [
+    sid    = "SSMReadOnly"
+    effect = "Allow"
+    actions = [
       "ssm:GetParameter",
       "ssm:GetParameters",
-      "ssm:GetParametersByPath"]
+    "ssm:GetParametersByPath"]
     resources = ["arn:${local.partition}:ssm:${var.aws_region}:${local.account_id}:parameter/${var.team_app_name}/*"]
   }
 }

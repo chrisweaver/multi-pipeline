@@ -57,6 +57,9 @@ phases:
 
       # Step 3 — Invoke Lambda and capture response
       - echo "=== Smoke-test- invoking Lambda ==="
+      - env |sort
+      - aws --version
+      - ls /tmp
       - >-
         aws lambda invoke
         --function-name "$LAMBDA_FUNCTION_NAME"
