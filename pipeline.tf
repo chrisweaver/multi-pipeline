@@ -172,7 +172,7 @@ resource "aws_codepipeline" "pr" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn        = source_codeconnections_arn
+        ConnectionArn        = var.source_codeconnections_arn
         FullRepositoryId     = "${var.repo_org}/${var.repo_name}"
         BranchName           = var.pr_branch_pattern
         OutputArtifactFormat = "CODE_ZIP"
@@ -306,7 +306,7 @@ resource "aws_codepipeline" "main" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn        = source_codeconnections_arn
+        ConnectionArn        = var.source_codeconnections_arn
         FullRepositoryId     = "${var.repo_org}/${var.repo_name}"
         BranchName           = var.main_branch
         OutputArtifactFormat = "CODE_ZIP"
@@ -560,8 +560,11 @@ data "aws_iam_policy_document" "codepipeline_permissions" {
     sid    = "ArtifactStore"
     effect = "Allow"
     actions = [
-      "s3:GetObject", "s3:PutObject",
-      "s3:GetBucketVersioning", "s3:GetObjectVersion", "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:GetBucketVersioning",
+      "s3:GetObjectVersion",
+      "s3:ListBucket",
     ]
     resources = [
       aws_s3_bucket.artifacts.arn,
@@ -569,12 +572,12 @@ data "aws_iam_policy_document" "codepipeline_permissions" {
     ]
   }
 
-  # CodeStar connection (source stage)
+  # Codeconnection (source)
   statement {
-    sid       = "CodeStarConnection"
+    sid       = "Codeconnection"
     effect    = "Allow"
     actions   = ["codestar-connections:UseConnection"]
-    resources = [source_codeconnections_arn]
+    resources = [var.source_codeconnections_arn]
   }
 
   # Start / inspect CodeBuild jobs (build, test, deploy-*)
@@ -601,7 +604,9 @@ data "aws_iam_policy_document" "codepipeline_permissions" {
     sid       = "PassRole"
     effect    = "Allow"
     actions   = ["iam:PassRole"]
-    resources = [aws_iam_role.codebuild.arn]
+    resources = [
+      aws_iam_role.codebuild.arn
+    ]
   }
 }
 
@@ -626,8 +631,10 @@ data "aws_iam_policy_document" "codebuild_permissions" {
     sid    = "ArtifactStore"
     effect = "Allow"
     actions = [
-      "s3:GetObject", "s3:PutObject",
-      "s3:GetBucketVersioning", "s3:GetObjectVersion",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:GetBucketVersioning",
+      "s3:GetObjectVersion",
     ]
     resources = [
       aws_s3_bucket.artifacts.arn,
@@ -640,7 +647,9 @@ data "aws_iam_policy_document" "codebuild_permissions" {
     sid    = "CloudWatchLogs"
     effect = "Allow"
     actions = [
-      "logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents",
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
     ]
     resources = ["arn:${local.partition}:logs:${var.aws_region}:${local.account_id}:log-group:/aws/codebuild/${var.team_app_name}-*"]
   }
@@ -650,8 +659,10 @@ data "aws_iam_policy_document" "codebuild_permissions" {
     sid    = "TestReports"
     effect = "Allow"
     actions = [
-      "codebuild:CreateReportGroup", "codebuild:CreateReport",
-      "codebuild:UpdateReport", "codebuild:BatchPutTestCases",
+      "codebuild:CreateReportGroup",
+      "codebuild:CreateReport",
+      "codebuild:UpdateReport",
+      "codebuild:BatchPutTestCases",
       "codebuild:BatchPutCodeCoverages",
     ]
     resources = ["arn:${local.partition}:codebuild:${var.aws_region}:${local.account_id}:report-group/${var.team_app_name}-*"]
@@ -678,7 +689,10 @@ data "aws_iam_policy_document" "codebuild_permissions" {
   statement {
     sid       = "SSMReadOnly"
     effect    = "Allow"
-    actions   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
+    actions   = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath"]
     resources = ["arn:${local.partition}:ssm:${var.aws_region}:${local.account_id}:parameter/${var.team_app_name}/*"]
   }
 }

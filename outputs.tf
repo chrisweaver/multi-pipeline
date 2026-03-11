@@ -31,13 +31,3 @@ output "lambda_function_arns" {
   description = "Map of environment → Lambda function ARN"
   value       = { for env, fn in aws_lambda_function.app : env => fn.arn }
 }
-
-output "codestar_connection_arn" {
-  description = "CodeStar connection ARN — must be ACTIVATED manually in the AWS Console"
-  value       = aws_codestarconnections_connection.source.arn
-}
-
-output "codestar_connection_status" {
-  description = "Current CodeStar connection status (PENDING until activated via Console)"
-  value       = aws_codestarconnections_connection.source.connection_status
-}

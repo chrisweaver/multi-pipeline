@@ -76,22 +76,15 @@ locals {
     ManagedBy   = "Terraform"
   }
 
-  common_tags_per_env = {
-    Agency      = var.agency
-    Project     = var.team_app_name
-    Environment = each.key
-    ManagedBy   = "Terraform"
-  }
-
   # Convenience: build a map of env → app-bucket name
   app_bucket_names = {
     for env in local.all_envs :
-    env => "${var.agency}-${var.team_app_name}-${var.environment}-app-bucket-${random_string.bucket_uid.result}"
+    env => "${var.agency}-${var.team_app_name}-${env}-app-bucket-${random_string.bucket_uid.result}"
   }
 
   # Convenience: build a map of env → Lambda function name
   lambda_names = {
     for env in local.all_envs :
-    env => "${var.agency}-${var.team_app_name}-${var.environment}-lambda"
+    env => "${var.agency}-${var.team_app_name}-${env}-lambda"
   }
 }
