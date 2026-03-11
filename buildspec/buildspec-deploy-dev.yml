@@ -29,14 +29,14 @@ phases:
       - ls -l
       - env | sort
       - echo "=== Deploying to DEV ==="
-      - echo "Lambda : $LAMBDA_FUNCTION_NAME"
-      - echo "Bucket : $TARGET_BUCKET"
+      - echo "Lambda-> $LAMBDA_FUNCTION_NAME"
+      - echo "Bucket-> $TARGET_BUCKET"
       - |
         if [ ! -f lambda-deployment.zip ]; then
-          echo "ERROR: lambda-deployment.zip missing from artifact"
+          echo "ERROR--lambda-deployment.zip missing from artifact"
           exit 1
         fi
-      - echo "Artifact size:" && du -sh lambda-deployment.zip
+      - echo "Artifact size->" && du -sh lambda-deployment.zip
 
   build:
     commands:
@@ -56,7 +56,7 @@ phases:
         --region "$AWS_DEFAULT_REGION"
 
       # Step 3 — Invoke Lambda and capture response
-      - echo "=== Smoke-test: invoking Lambda ==="
+      - echo "=== Smoke-test- invoking Lambda ==="
       - >-
         aws lambda invoke
         --function-name "$LAMBDA_FUNCTION_NAME"
@@ -64,17 +64,17 @@ phases:
         --cli-binary-format raw-in-base64-out
         --region "$AWS_DEFAULT_REGION"
         /tmp/lambda-response.json
-      - echo "Lambda response:" && cat /tmp/lambda-response.json
+      - echo "Lambda response--" && cat /tmp/lambda-response.json
 
       # Step 4 — Extract the S3 key returned by the Lambda
       - echo "=== Extracting deposited S3 key ==="
       - |
         DEPOSITED_KEY=
-        echo "Deposited key: $DEPOSITED_KEY"
+        echo "Deposited key-> $DEPOSITED_KEY"
 
         # Step 5 — Confirm the object is present in S3
         echo "=== Verifying S3 deposit ==="
-        aws s3api head-object           --bucket "$TARGET_BUCKET"           --key "$DEPOSITED_KEY"           --region "$AWS_DEFAULT_REGION"           && echo "SUCCESS: s3://$TARGET_BUCKET/$DEPOSITED_KEY confirmed"           || (echo "ERROR: Object not found in S3" && exit 1)
+        aws s3api head-object           --bucket "$TARGET_BUCKET"           --key "$DEPOSITED_KEY"           --region "$AWS_DEFAULT_REGION"           && echo "SUCCESS-> s3://$TARGET_BUCKET/$DEPOSITED_KEY confirmed"           || (echo "ERROR-> Object not found in S3" && exit 1)
 
   post_build:
     commands:
