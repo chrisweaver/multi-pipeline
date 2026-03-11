@@ -1,0 +1,5 @@
+# requirements-dev.txt
+# Runtime dependencies for the Lambda function.
+# Runtime dependencies are listed in requirements.txt; this file is for development dependencies.
+moto>=5.1.22
+pytest>=9.0.2
