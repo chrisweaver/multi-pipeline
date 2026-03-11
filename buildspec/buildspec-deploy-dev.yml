@@ -82,4 +82,5 @@ phases:
 artifacts:
   files:
     - "**/*"
+    - buildspec/**/*
   discard-paths: no

@@ -64,5 +64,7 @@ reports:
 # Pass everything downstream so the deploy buildspecs can find the zip
 artifacts:
   files:
-    - "**/*"
+    #- "**/*"
+    - lambda-deployment.zip
+    - buildspec/**/*
   discard-paths: no
