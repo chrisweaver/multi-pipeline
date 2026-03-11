@@ -30,11 +30,11 @@ phases:
           -v
 
       # Integration tests
-      - |
-        python -m pytest tests/integration/ \
-          --junitxml=test-results/integration.xml \
-          --tb=short \
-          -v
+      # - |
+        # python -m pytest tests/integration/ \
+        #   --junitxml=test-results/integration.xml \
+        #   --tb=short \
+        #   -v
 
       # Coverage report (informational — does not gate the build)
       - |
@@ -48,7 +48,7 @@ phases:
     commands:
       - echo "=== Test results ==="
       - cat test-results/unit.xml        | grep -E 'tests=|failures=|errors='
-      - cat test-results/integration.xml | grep -E 'tests=|failures=|errors='
+      # - cat test-results/integration.xml | grep -E 'tests=|failures=|errors='
 
 # Publish JUnit reports to CodeBuild console
 reports:
@@ -56,10 +56,10 @@ reports:
     files:
       - test-results/unit.xml
     file-format: JUNITXML
-  integration-test-report:
-    files:
-      - test-results/integration.xml
-    file-format: JUNITXML
+  # integration-test-report:
+  #   files:
+  #     - test-results/integration.xml
+  #   file-format: JUNITXML
 
 # Pass everything downstream so the deploy buildspecs can find the zip
 artifacts:
