@@ -16,7 +16,7 @@ phases:
     commands:
       - echo "=== Linting ==="
       - pip install flake8 --quiet
-      - flake8 src/ --max-line-length=120 --exclude=__pycache__
+      - flake8 depositor/ --max-line-length=120 --exclude=__pycache__
       - echo "=== Lint passed ==="
 
   build:
@@ -24,7 +24,7 @@ phases:
       - echo "=== Installing runtime dependencies ==="
       - pip install -r requirements.txt -t package/ --quiet
       - echo "=== Packaging Lambda zip ==="
-      - cp -r src/* package/
+      - cp -r depositor/* package/
       - cd package && zip -r ../lambda-deployment.zip . -x "*.pyc" -x "*/__pycache__/*"
       - cd ..
       - echo "=== Package size ===" && du -sh lambda-deployment.zip
@@ -35,8 +35,11 @@ phases:
 
 artifacts:
   files:
+    - requirements.txt
     - lambda-deployment.zip
     - buildspec/**/*
+    - depositor/**/*
+    - tests/**/*
   discard-paths: no
 
 cache:

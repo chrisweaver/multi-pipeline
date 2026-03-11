@@ -6,9 +6,9 @@
 # S3 — Shared Artifact Store
 # ------------------------------------------------------------------------------
 resource "aws_s3_bucket" "artifacts" {
-  bucket = "${var.agency}-${var.team_app_name}-${var.environment}-artifacts-bucket-${random_string.bucket_uid.result}"
+  bucket        = "${var.agency}-${var.team_app_name}-${var.environment}-artifacts-bucket-${random_string.bucket_uid.result}"
   force_destroy = true
-  tags = local.common_tags
+  tags          = local.common_tags
 }
 
 resource "aws_s3_bucket_versioning" "artifacts" {

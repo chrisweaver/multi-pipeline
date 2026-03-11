@@ -11,24 +11,25 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
+      - echo "=== Installing prequisites ==="
       - pip install --upgrade pip --quiet
       - pip install -r requirements.txt -r requirements-dev.txt --quiet
 
   pre_build:
     commands:
-      - echo "=== Running tests ==="
       - mkdir -p test-results
 
   build:
     commands:
-      # Unit tests
+      - echo "=== Running tests ==="
+      # Unit tests (uses moto to mock AWS services — no real AWS calls)
       - |
         python -m pytest tests/unit/ \
           --junitxml=test-results/unit.xml \
           --tb=short \
           -v
 
-      # Integration tests (uses moto to mock AWS services — no real AWS calls)
+      # Integration tests
       - |
         python -m pytest tests/integration/ \
           --junitxml=test-results/integration.xml \
