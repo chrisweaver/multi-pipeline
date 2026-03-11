@@ -36,6 +36,7 @@ phases:
 artifacts:
   files:
     - requirements.txt
+    - requirements-dev.txt
     - lambda-deployment.zip
     - buildspec/**/*
     - depositor/**/*
