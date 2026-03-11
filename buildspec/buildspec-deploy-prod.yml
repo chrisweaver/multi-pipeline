@@ -22,7 +22,7 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
-      - pip install awscli --upgrade --quiet
+      - env | sort
 
   pre_build:
     commands:

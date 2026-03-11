@@ -64,17 +64,20 @@ phases:
         --cli-binary-format raw-in-base64-out
         --region "$AWS_DEFAULT_REGION"
         /tmp/lambda-response.json
-      - echo "Lambda response--" && cat /tmp/lambda-response.json
+      - echo "Lambda response-> " && cat /tmp/lambda-response.json
 
       # Step 4 — Extract the S3 key returned by the Lambda
       - echo "=== Extracting deposited S3 key ==="
       - |
-        DEPOSITED_KEY=
+        DEPOSITED_KEY=$(jq -r '.key' /tmp/lambda-response.json)
         echo "Deposited key-> $DEPOSITED_KEY"
 
         # Step 5 — Confirm the object is present in S3
         echo "=== Verifying S3 deposit ==="
-        aws s3api head-object           --bucket "$TARGET_BUCKET"           --key "$DEPOSITED_KEY"           --region "$AWS_DEFAULT_REGION"           && echo "SUCCESS-> s3://$TARGET_BUCKET/$DEPOSITED_KEY confirmed"           || (echo "ERROR-> Object not found in S3" && exit 1)
+        aws s3api head-object
+        --bucket "$TARGET_BUCKET"
+        --key "$DEPOSITED_KEY"
+        --region "$AWS_DEFAULT_REGION" && echo "SUCCESS-> s3://$TARGET_BUCKET/$DEPOSITED_KEY confirmed"           || (echo "ERROR-> Object not found in S3" && exit 1)
 
   post_build:
     commands:
