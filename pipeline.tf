@@ -286,6 +286,7 @@ resource "aws_codepipeline" "pr" {
 
 resource "aws_codepipeline" "main" {
   name     = "${var.team_app_name}-main-pipeline"
+  pipeline_type = "V2"
   role_arn = aws_iam_role.codepipeline.arn
 
   artifact_store {
